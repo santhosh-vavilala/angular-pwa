@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { DataService } from './data.service';
 
 @Component({
   selector: 'app-root',
@@ -7,4 +8,12 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'app';
+  items;
+  constructor(private dataService: DataService){
+    
+  }
+
+  ngOnInit(){
+    this.dataService.getPosts().subscribe(x => {this.items = x});
+  }
 }
