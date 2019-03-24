@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { DataService } from './data.service';
 import { SwPush } from '@angular/service-worker';
+import { PushNotificationService } from './push-notification.service';
 
 const VAPID_PUBLIC = 'BEOcNg4XUIDBokPhzy_5gqYHqdHcnnITtyZP8O4tULsFMTGaIjVenwRTbp97TsSrBh_IzOMOkrbxE-waSCFFFnk';
 
@@ -12,7 +13,7 @@ const VAPID_PUBLIC = 'BEOcNg4XUIDBokPhzy_5gqYHqdHcnnITtyZP8O4tULsFMTGaIjVenwRTbp
 export class AppComponent {
   title = 'app';
   items;
-  constructor(private dataService: DataService, private swPush: SwPush){
+  constructor(private dataService: DataService, private swPush: SwPush, private pushService: PushNotificationService){
     if (swPush.isEnabled) {
       swPush
         .requestSubscription({
@@ -21,6 +22,7 @@ export class AppComponent {
         .then(subscription => {
           // send subscription to the server
           console.log(subscription);
+          pushService.sendSubscriptionToTheServer(subscription).subscribe();
         })
         .catch(console.error);
     }
@@ -28,5 +30,9 @@ export class AppComponent {
 
   ngOnInit(){
     this.dataService.getPosts().subscribe(x => {this.items = x});
+  }
+
+  sendNotificationToTheClient(){
+    this.pushService.sendNotificationToTheClient().subscribe();    
   }
 }
